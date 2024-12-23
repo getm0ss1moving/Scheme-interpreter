@@ -1,0 +1,6 @@
+build
+myscheme
+
+score/*.txt
+
+score/*.out
