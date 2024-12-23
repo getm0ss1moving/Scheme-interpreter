@@ -118,7 +118,6 @@ Value Begin::eval(Assoc &e) {
 Value Quote::eval(Assoc &e) {
     if(dynamic_cast<List*>(s.get())){
         int count=0;
-        
         List *lst = dynamic_cast<List*>(s.get());
         for(int i = 0; i < lst->stxs.size();i++){
             if(dynamic_cast<Identifier*>(lst->stxs[i].get())){
@@ -133,36 +132,39 @@ Value Quote::eval(Assoc &e) {
             if(lst->stxs.size()==0){
                 return NullV();
             }
-            Syntax a = lst->stxs[0];
-            Quote q(a);
-            Value v = q.eval(e);
-            List *nxt = new List();
-            
-            if(dynamic_cast<Identifier*>(lst->stxs[1].get())){
-                if(dynamic_cast<Identifier*>(lst->stxs[1].get())->s=="."){
-                    Syntax a1 = lst->stxs[2];
-                    Quote q1(a1);
-                    Value v1 = q1.eval(e);
-                    return Value(new Pair(v,v1));
+            if(lst->stxs.size()==3){
+                Syntax a = lst->stxs[0];
+                Quote q(a);
+                Value v = q.eval(e);
+                if(dynamic_cast<Identifier*>(lst->stxs[1].get())){
+                    if(dynamic_cast<Identifier*>(lst->stxs[1].get())->s=="."){
+                        Syntax a1 = lst->stxs[2];
+                        Quote q1(a1);
+                        Value v1 = q1.eval(e);
+                        return Value(new Pair(v,v1));
+                    }
                 }
             }
+            
+            List *nxt = new List();
             for(int j = 1;j<lst->stxs.size();j++){
                 nxt->stxs.push_back(lst->stxs[j]);
             }
-            
             Syntax a2(nxt);
             Expr b2(new Quote(a2));
             return Value(new Pair(v,b2->eval(e)));
 
         }
-        
-        
     }else if(dynamic_cast<Identifier*>(s.get())){
         Identifier *id = dynamic_cast<Identifier*>(s.get());
         return SymbolV(id->s);
     }
-    else{
-        return s->parse(e)->eval(e);
+    else if(dynamic_cast<TrueSyntax*>(s.get())){
+        return BooleanV(true);
+    }else if(dynamic_cast<FalseSyntax*>(s.get())){
+        return BooleanV(false);
+    }else if(auto it = dynamic_cast<Number*>(s.get())){
+        return IntegerV(it->n);
     }
     
 } // quote expression
