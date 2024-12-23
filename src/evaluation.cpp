@@ -72,6 +72,7 @@ Value Letrec::eval(Assoc &env) {
 } // letrec expression
 
 Value Var::eval(Assoc &e) {
+    checkVar(x);
     Value var = find (x,e);
     if(var.get()==nullptr){
         if(primitives.count(x)!=0){
@@ -235,8 +236,6 @@ Value Var::eval(Assoc &e) {
                 }
                 
             }
-            
-            
         }else{
             throw RuntimeError ("Undefined var");
         }
