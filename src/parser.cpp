@@ -57,7 +57,7 @@ Expr Syntax :: parse(Assoc &env) {
         return l->parse(env);
     }
     else {
-        throw RuntimeError("Invalid input");
+        throw RuntimeError("Invalid input1");
     }//error
 }
 
@@ -66,7 +66,7 @@ Expr Number :: parse(Assoc &env) {
 }
 
 Expr Identifier :: parse(Assoc &env) {
-    return Expr(new Var(s));
+        return Expr(new Var(s));
 }
 
 Expr TrueSyntax :: parse(Assoc &env) {
@@ -98,7 +98,7 @@ Expr List :: parse(Assoc &env) {
              switch(primitives[id->s]){
                 case E_CONS:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments2");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -113,7 +113,7 @@ Expr List :: parse(Assoc &env) {
                         return Expr(new Car(e1));
                     }
                     else{
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments3");
                         //error
                     }
                     break;
@@ -124,13 +124,13 @@ Expr List :: parse(Assoc &env) {
                         return Expr(new Cdr(e1));
                     }
                     else{
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments4");
                     }
                     break;
                 }
                 case E_PLUS:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments5");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -141,7 +141,7 @@ Expr List :: parse(Assoc &env) {
                 }
                 case E_MINUS:{ 
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments6");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -158,25 +158,25 @@ Expr List :: parse(Assoc &env) {
                         return Expr(new Mult(e1,e2));
                     }
                     else{
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments7");
                     }
                     break;
                 }case E_VOID:{
                     if(stxs.size()==1){
                         return Expr(new MakeVoid());
                     }
-                    throw RuntimeError("Wrong number of arguments");
+                    throw RuntimeError("Wrong number of arguments8");
                     break;
                 }case E_EXIT:{
                     if(stxs.size()==1){
                         return Expr(new Exit());
                     }
-                    throw RuntimeError("Wrong number of arguments");
+                    throw RuntimeError("Wrong number of arguments9");
                     break;
                 }
                 case E_LT:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments10");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -186,7 +186,7 @@ Expr List :: parse(Assoc &env) {
                     break;
                 }case E_GT:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments11");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -196,7 +196,7 @@ Expr List :: parse(Assoc &env) {
                     break;
                 }case E_LE:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments12");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -206,7 +206,7 @@ Expr List :: parse(Assoc &env) {
                     break;
                 }case E_GE:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments13");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -216,7 +216,7 @@ Expr List :: parse(Assoc &env) {
                     break;
                 }case E_EQ:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments14");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -226,7 +226,7 @@ Expr List :: parse(Assoc &env) {
                     break;
                 }case E_EQQ:{
                     if(stxs.size()!=3){   //error
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments15");
                     }
                     else{
                         Expr e1 = stxs[1]->parse(env);
@@ -239,7 +239,7 @@ Expr List :: parse(Assoc &env) {
                         Expr e1 = stxs[1]->parse(env);
                         return Expr(new IsFixnum(e1));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments16");
                     }
                     break;
                 }case E_BOOLQ:{
@@ -247,7 +247,7 @@ Expr List :: parse(Assoc &env) {
                         Expr e1 = stxs[1]->parse(env);
                         return Expr(new IsBoolean(e1));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");                        
+                        throw RuntimeError("Wrong number of arguments17");                        
                     }
                     break;
                 }case E_SYMBOLQ:{
@@ -255,7 +255,7 @@ Expr List :: parse(Assoc &env) {
                         Expr e1 = stxs[1]->parse(env);
                         return Expr(new IsSymbol(e1));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");                        
+                        throw RuntimeError("Wrong number of arguments18");                        
                     }
                     break;
                 }case E_NULLQ:{
@@ -263,7 +263,7 @@ Expr List :: parse(Assoc &env) {
                         Expr e1 = stxs[1]->parse(env);
                         return Expr(new IsNull(e1));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");                        
+                        throw RuntimeError("Wrong number of arguments19");                        
                     }
                     break;
                 }case E_PAIRQ:{
@@ -271,7 +271,7 @@ Expr List :: parse(Assoc &env) {
                         Expr e1 = stxs[1]->parse(env);
                         return Expr(new IsPair(e1));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");                        
+                        throw RuntimeError("Wrong number of arguments20");                        
                     }
                     break;
                 }case E_NOT:{
@@ -279,7 +279,7 @@ Expr List :: parse(Assoc &env) {
                         Expr e1 = stxs[1]->parse(env);
                         return Expr(new Not(e1));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");                         
+                        throw RuntimeError("Wrong number of arguments21");                         
                     }
                     break;
                 }case E_PROCQ:{
@@ -287,7 +287,7 @@ Expr List :: parse(Assoc &env) {
                         Expr e1 = stxs[1]->parse(env);
                         return Expr(new IsProcedure(e1));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");                        
+                        throw RuntimeError("Wrong number of arguments22");                        
                     }
                     break;
                 }default:{
@@ -305,14 +305,14 @@ Expr List :: parse(Assoc &env) {
                         return Expr(new If(e1,e2,e3));
                     }
                     else{
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments23");
                     }
                     break;
                 }case E_QUOTE: {
                     if(stxs.size()==2){
                         return Expr(new Quote(stxs[1]));
                     }else{
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments24");
                     }
                     break;
 
@@ -325,9 +325,9 @@ Expr List :: parse(Assoc &env) {
                     }
                     return Expr(new Begin(es));
                     break;
-                }case E_LET:{
+                }case E_LETREC:{
                     if(stxs.size()!=3){
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments25");
                     }else{
                         Assoc newe = env;
                         std::vector<std::pair<std::string,Expr>>bind_;
@@ -341,10 +341,10 @@ Expr List :: parse(Assoc &env) {
                                         std::string id = id_->s;
                                         newe = extend(id,NullV(),newe);
                                     } else{
-                                        throw RuntimeError("Wrong number of arguments");
+                                        throw RuntimeError("Wrong number of arguments26");
                                     }
                                 } else{
-                                    throw RuntimeError("Wrong number of arguments");
+                                    throw RuntimeError("Wrong number of arguments27");
                                 }
                             }
                             for(auto &j:func->stxs){
@@ -356,12 +356,12 @@ Expr List :: parse(Assoc &env) {
                                 }
                             }
                         }
-                        else throw RuntimeError("Wrong number of arguments");
-                        return Expr (new Let(bind_,stxs[2]->parse(newe)));
+                        else throw RuntimeError("Wrong number of arguments28");
+                        return Expr (new Letrec(bind_,stxs[2]->parse(newe)));
                     }
-                }case E_LETREC:{
+                }case E_LET:{
                     if(stxs.size()!=3){
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments29");
                     }else{
                         Assoc newe =env;
                         std::vector<std::pair<std::string,Expr>>bind_;
@@ -377,19 +377,19 @@ Expr List :: parse(Assoc &env) {
                                         Expr temp = (lst->stxs[1].get())->parse(env);
                                         bind_.push_back(std::mp(id,temp));
                                     } else{
-                                        throw RuntimeError("Wrong number of arguments");
+                                        throw RuntimeError("Wrong number of arguments30");
                                     }
                                 } else{
-                                    throw RuntimeError("Wrong number of arguments");;
+                                    throw RuntimeError("Wrong number of arguments31");;
                                 }
                             }
                         }
-                        else throw RuntimeError("Wrong number of arguments");
-                        return Expr (new Letrec(bind_,stxs[2]->parse(env)));
+                        else throw RuntimeError("Wrong number of arguments32");
+                        return Expr (new Let(bind_,stxs[2]->parse(env)));
                     }
                 }case E_LAMBDA:{
                     if(stxs.size()!=3){
-                        throw RuntimeError("Wrong number of arguments");
+                        throw RuntimeError("Wrong number of arguments33");
                     }
                     else {
                         Assoc newe = env;
@@ -403,7 +403,7 @@ Expr List :: parse(Assoc &env) {
                                     vars.push_back(id_->s);
                                     newe = extend(id_->s,NullV(),newe);
                                 } else{
-                                    throw RuntimeError("Wrong number of arguments");;
+                                    throw RuntimeError("Wrong number of arguments34");;
                                 }
                             }
                             return Expr(new Lambda(vars,stxs[2]->parse(newe)));

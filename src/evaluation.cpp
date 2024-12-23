@@ -11,12 +11,12 @@ extern std :: map<std :: string, ExprType> primitives;
 extern std :: map<std :: string, ExprType> reserved_words;
 void checkVar(std::string x){
     if(x.empty()){
-        throw RuntimeError("Variable name cannot be empty");
+        throw RuntimeError("Variable name cannot be empty40");
     }else{
         if(x[0]!='.'&&x[0]!='@'&&!isdigit(x[0])){
             return;
         }else{
-            throw RuntimeError("Invalid variable name");
+            throw RuntimeError("Invalid variable name39");
         }
     }
 }
@@ -50,7 +50,7 @@ Value Apply::eval(Assoc &e) {
         }
         return func_->e->eval(cur);
     }else{
-        throw RuntimeError("Invalid number of arguments");
+        throw RuntimeError("Invalid number of arguments38");
     }
 
     
@@ -73,8 +73,172 @@ Value Letrec::eval(Assoc &env) {
 
 Value Var::eval(Assoc &e) {
     Value var = find (x,e);
+    
     if(var.get()==nullptr){
-        throw RuntimeError("undefined variable");
+        if(primitives.count(x)!=0){
+            std::vector<std::string>para;
+            switch (primitives[x]){
+                case E_MUL:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new Mult(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                }
+                case E_PLUS:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new Plus(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                   
+                }
+                case E_MINUS:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new Minus(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                   
+                }
+                case E_LT:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new Less(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_LE:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new LessEq(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                   
+                }
+                case E_GT:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new Greater(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                 case E_GE:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new GreaterEq(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_EQ:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new Equal(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                   
+                }
+                case E_EQQ:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new IsEq(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_CONS:{
+                    para.push_back("1");
+                    para.push_back("2");
+                    Expr exp = (new Cons(new Var("1"),new Var("2")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_BOOLQ:{
+                    para.push_back("1");
+                    Expr exp = (new IsBoolean(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                }
+                case E_INTQ:{
+                    para.push_back("1");
+                    Expr exp = (new IsFixnum(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_NULLQ:{
+                    para.push_back("1");
+                    Expr exp = (new IsFixnum(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_PAIRQ:{
+                    para.push_back("1");
+                    Expr exp = (new IsPair(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_PROCQ:{
+                    para.push_back("1");
+                    Expr exp = (new IsProcedure(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_SYMBOLQ:{
+                    para.push_back("1");
+                    Expr exp = (new IsSymbol(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_NOT:{
+                    para.push_back("1");
+                    Expr exp = (new Not(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_CAR:{
+                    para.push_back("1");
+                    Expr exp = (new Car(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_CDR:{
+                    para.push_back("1");
+                    Expr exp = (new Cdr(new Var("1")));
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_VOID:{
+                    Expr exp = (new MakeVoid());
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                case E_EXIT:{
+                    Expr exp = (new Exit());
+                    Assoc newe = e;
+                    return ClosureV(para,exp,newe);
+                    
+                }
+                default:{
+                    throw RuntimeError ("Undifined primitives");
+                }
+                
+            }
+            
+            
+        }
     }else{
         return var;
     }
@@ -127,7 +291,7 @@ Value Quote::eval(Assoc &e) {
             }
         }
         if(count>=2){
-            throw RuntimeError("Too many dots in quote");
+            throw RuntimeError("Too many dots in quote36");
         }else{
             if(lst->stxs.size()==0){
                 return NullV();
@@ -145,7 +309,6 @@ Value Quote::eval(Assoc &e) {
                     }
                 }
             }
-            
             List *nxt = new List();
             for(int j = 1;j<lst->stxs.size();j++){
                 nxt->stxs.push_back(lst->stxs[j]);
@@ -186,7 +349,7 @@ Value Binary::eval(Assoc &e) {
         if(rand1_.get()->v_type==V_INT&&rand2_.get()->v_type==V_INT){
             return evalRator(rand1_,rand2_);
         }else{
-            throw RuntimeError("wrong type");
+            throw RuntimeError("wrong type35");
         }
     }
     if(e_type == E_CONS||e_type == E_EQQ){
@@ -352,6 +515,6 @@ Value Cdr::evalRator(const Value &rand) {
         return cdr_->cdr;
     }   
     else{
-        throw RuntimeError("not a pair2");
+        throw RuntimeError("not a pair1");
     }
 } // cdr
