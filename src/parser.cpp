@@ -319,7 +319,6 @@ Expr List :: parse(Assoc &env) {
                 }
                 case E_BEGIN: {
                     std::vector<Expr>es;
-                    
                     for(int i = 1;i<stxs.size();i++){
                         es.push_back(stxs[i]->parse(env));
                     }
@@ -327,7 +326,7 @@ Expr List :: parse(Assoc &env) {
                     break;
                 }case E_LETREC:{
                     if(stxs.size()!=3){
-                        throw RuntimeError("Wrong number of arguments25");
+                        throw RuntimeError("Wrong number of arguments letrec1");
                     }else{
                         Assoc newe = env;
                         std::vector<std::pair<std::string,Expr>>bind_;
@@ -341,27 +340,27 @@ Expr List :: parse(Assoc &env) {
                                         std::string id = id_->s;
                                         newe = extend(id,NullV(),newe);
                                     } else{
-                                        throw RuntimeError("Wrong number of arguments26");
+                                        throw RuntimeError("Wrong number of arguments letrec2");
                                     }
                                 } else{
-                                    throw RuntimeError("Wrong number of arguments27");
+                                    throw RuntimeError("Wrong number of arguments letrec3");
                                 }
                             }
                             for(auto &j:func->stxs){
                                 if(dynamic_cast<List*>(j.get())){
                                     List* lst2 = dynamic_cast<List*>(j.get());
                                     Identifier* id__ = dynamic_cast<Identifier*>(lst2->stxs[0].get());
-                                    Expr final = (lst2->stxs[1].get())->parse(env);
+                                    Expr final = (lst2->stxs[1].get())->parse(newe);
                                     bind_.push_back(std::mp(id__->s,final));
                                 }
                             }
                         }
-                        else throw RuntimeError("Wrong number of arguments28");
+                        else throw RuntimeError("Wrong number of arguments let1");
                         return Expr (new Letrec(bind_,stxs[2]->parse(newe)));
                     }
                 }case E_LET:{
                     if(stxs.size()!=3){
-                        throw RuntimeError("Wrong number of arguments29");
+                        throw RuntimeError("Wrong number of arguments let2");
                     }else{
                         Assoc newe =env;
                         std::vector<std::pair<std::string,Expr>>bind_;
@@ -373,23 +372,23 @@ Expr List :: parse(Assoc &env) {
                                     if(lst->stxs.size()==2){
                                         Identifier* id_ = dynamic_cast<Identifier*>(lst->stxs[0].get());
                                         std::string id = id_->s;
-                                        env = extend(id,NullV(),env);
                                         Expr temp = (lst->stxs[1].get())->parse(env);
+                                        newe = extend(id,NullV(),newe);
                                         bind_.push_back(std::mp(id,temp));
                                     } else{
-                                        throw RuntimeError("Wrong number of arguments30");
+                                        throw RuntimeError("Wrong number of arguments let3");
                                     }
                                 } else{
-                                    throw RuntimeError("Wrong number of arguments31");;
+                                    throw RuntimeError("Wrong number of arguments let4");;
                                 }
                             }
                         }
-                        else throw RuntimeError("Wrong number of arguments32");
-                        return Expr (new Let(bind_,stxs[2]->parse(env)));
+                        else throw RuntimeError("Wrong number of arguments let5");
+                        return Expr (new Let(bind_,stxs[2]->parse(newe)));
                     }
                 }case E_LAMBDA:{
                     if(stxs.size()!=3){
-                        throw RuntimeError("Wrong number of arguments33");
+                        throw RuntimeError("Wrong number of arguments lambda1");
                     }
                     else {
                         Assoc newe = env;

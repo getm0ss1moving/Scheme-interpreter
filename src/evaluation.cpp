@@ -73,7 +73,6 @@ Value Letrec::eval(Assoc &env) {
 
 Value Var::eval(Assoc &e) {
     Value var = find (x,e);
-    
     if(var.get()==nullptr){
         if(primitives.count(x)!=0){
             std::vector<std::string>para;
