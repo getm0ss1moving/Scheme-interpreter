@@ -10,13 +10,21 @@ using std::vector;
 extern std :: map<std :: string, ExprType> primitives;
 extern std :: map<std :: string, ExprType> reserved_words;
 void checkVar(std::string x){
+    char x0 = x[0];
     if(x.empty()){
-        throw RuntimeError("Variable name cannot be empty40");
-    }else{
-        if(x[0]!='.'&&x[0]!='@'&&!isdigit(x[0])){
-            return;
-        }else{
-            throw RuntimeError("Invalid variable name39");
+        throw RuntimeError("empty var");
+    }
+    else{
+        if(std::isdigit(x0)||x0=='.'||x0=='@')
+        {
+            throw RuntimeError("invalid var name");
+        }
+        else{
+            for(int i = 0; i<x.size();i++){
+                if(x[i]=='#'){
+                    throw RuntimeError("invalid var name");
+                }
+            }
         }
     }
 }
