@@ -132,10 +132,10 @@ Value Quote::eval(Assoc &e) {
             if(lst->stxs.size()==0){
                 return NullV();
             }
+            Syntax a = lst->stxs[0];
+            Quote q(a);
+            Value v = q.eval(e);
             if(lst->stxs.size()==3){
-                Syntax a = lst->stxs[0];
-                Quote q(a);
-                Value v = q.eval(e);
                 if(dynamic_cast<Identifier*>(lst->stxs[1].get())){
                     if(dynamic_cast<Identifier*>(lst->stxs[1].get())->s=="."){
                         Syntax a1 = lst->stxs[2];
