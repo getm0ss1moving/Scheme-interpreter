@@ -10,23 +10,18 @@ using std::vector;
 extern std :: map<std :: string, ExprType> primitives;
 extern std :: map<std :: string, ExprType> reserved_words;
 void checkVar(std::string x){
-    char x0 = x[0];
-    if(x.empty()){
-        throw RuntimeError("empty var");
-    }
-    else{
-        if(std::isdigit(x0)||x0=='.'||x0=='@')
-        {
-            throw RuntimeError("invalid var name");
-        }
-        else{
-            for(int i = 0; i<x.size();i++){
-                if(x[i]=='#'){
-                    throw RuntimeError("invalid var name");
-                }
+    if(x.empty()) {throw RuntimeError("invalid var");}
+    char a = x[0];
+    if(a=='.'||a=='@'||std::isdigit(a)){
+        throw RuntimeError("invalid var");
+    }else{
+        for(int i = 0;i<x.size();i++){
+            if(x[i]=='#'){
+                throw RuntimeError("invalid var");
             }
         }
     }
+    return;
 }
 Value Let::eval(Assoc &env) {
     Assoc cur = env;
@@ -45,7 +40,10 @@ Value Lambda::eval(Assoc &env) {
 } // lambda expression
 
 Value Apply::eval(Assoc &e) {
-    Value func = rator->eval(e);
+    Value func = rator.get()->eval(e);
+    if(func->v_type!=V_PROC){
+        throw RuntimeError("Apply to non-function");
+    }
     Closure* func_ = dynamic_cast<Closure*>(func.get());
     Assoc cur = func_->env;
     vector<std::pair<std::string,Value>>bind_v;
