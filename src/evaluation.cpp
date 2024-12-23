@@ -238,6 +238,8 @@ Value Var::eval(Assoc &e) {
             }
             
             
+        }else{
+            throw RuntimeError ("Undefined var");
         }
     }else{
         return var;
