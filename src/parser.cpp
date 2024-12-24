@@ -397,11 +397,10 @@ Expr List :: parse(Assoc &env) {
                             List *lst = dynamic_cast<List*>(stxs[1].get());
                             for(auto &i: lst->stxs)
                             {
-                                Expr exp = (i.get())->parse(env);
-                                if(dynamic_cast<Var*>(exp.get())){
-                                    auto var = dynamic_cast<Var*>(exp.get());
-                                    vars.push_back(var->x);
-                                    newe = extend(var->x,NullV(),newe);
+                                if(dynamic_cast<Identifier*>(i.get())){
+                                    Identifier* id_ = dynamic_cast<Identifier*>(i.get());
+                                    vars.push_back(id_->s);
+                                    newe = extend(id_->s,NullV(),newe);
                                 } else{
                                     throw RuntimeError("Wrong number of arguments34");;
                                 }
@@ -441,3 +440,235 @@ Expr List :: parse(Assoc &env) {
 
 
 #endif
+// #ifndef PARSER 
+// #define PARSER
+
+// // parser of myscheme 
+
+// #include "RE.hpp"
+// #include "Def.hpp"
+// #include "syntax.hpp"
+// #include "expr.hpp"
+// #include "value.hpp"
+// #include <map>
+// #include <cstring>
+// #include <iostream>
+// #define mp make_pair
+// using std :: string;
+// using std :: vector;
+// using std :: pair;
+
+// extern std :: map<std :: string, ExprType> primitives;
+// extern std :: map<std :: string, ExprType> reserved_words;
+// bool check(Assoc e,std::string s) {
+//     if(find(s,e).get()==nullptr){
+//         return false;
+//     }
+//     return true;
+// }
+// Expr Syntax :: parse(Assoc &env) {
+//     return ptr.get()->parse(env);
+// }
+
+// Expr Number :: parse(Assoc &env) {
+//     return Expr(new Fixnum(n));
+// }
+
+// Expr Identifier :: parse(Assoc &env) {
+//     return Expr(new Var(s));
+// }
+
+// Expr TrueSyntax :: parse(Assoc &env) {
+//     return Expr(new True());
+// }
+
+// Expr FalseSyntax :: parse(Assoc &env) {
+//     return Expr(new False());
+// }
+
+// Expr List :: parse(Assoc &env) {
+//     if(stxs.empty()){
+//         throw RuntimeError("Re for empty list");
+//     }
+//     SyntaxBase *first = stxs[0].get();
+//     if(auto id = dynamic_cast<Identifier*>(first)){
+//         std::string s = id->s;
+//         if(check(env,s)){
+//             std::vector<Expr>exprs;
+//             for(int i = 1;i<stxs.size();i++){
+//                 exprs.push_back(stxs[i]->parse(env));
+//             }
+//             return Expr(new Apply(first->parse(env),exprs));
+//         }
+//         if(reserved_words.count(s))
+//         {
+//             switch(reserved_words[s]){
+//                 case E_IF:{
+//                     if(stxs.size()!=4){
+//                         throw RuntimeError("Wrong number of arguments if");
+//                     }
+//                     return Expr(new If(stxs[1].get()->parse(env),stxs[2].get()->parse(env),stxs[3].get()->parse(env)));
+//                     break;
+//                 }
+//                 case E_BEGIN:{
+//                     std::vector<Expr> exp;
+//                     for(int i = 1;i<stxs.size();i++){
+//                         exp.push_back(stxs[i]->parse(env));
+//                     }
+//                     return Expr(new Begin(exp));
+//                     break;
+//                 }
+//                 case E_QUOTE:{
+//                     if(stxs.size()!=2){
+//                         throw RuntimeError("Wrong number of arguments quote");
+//                     }
+//                     else{
+//                         return new Quote(stxs[1]);
+//                     }
+//                     break;
+//                 }
+//                 case E_LAMBDA:{
+//                     if(stxs.size()!=3){
+//                         throw RuntimeError("Wrong number of arguments lambda");
+//                     }
+//                     else{
+//                         std::vector<std::string>var;
+//                         Assoc newe = env;
+//                         if(auto lst = dynamic_cast<List*>(stxs[1].get())){
+//                             for(int i=0;i<lst->stxs.size();i++){
+//                                 Expr var_name = lst->stxs[i].get()->parse(env); 
+//                                 if(dynamic_cast<Var*>(var_name.get())){
+//                                     var.push_back(dynamic_cast<Var*>(var_name.get())->x);
+//                                     newe = extend(dynamic_cast<Var*>(var_name.get())->x, NullV(), newe);
+//                                 }
+//                                 else{
+//                                     throw RuntimeError("unknown exp");
+//                                 }
+//                             }   
+//                             return Expr(new Lambda(var, stxs[2]->parse(newe)));
+//                         }
+//                         else{
+//                             throw RuntimeError("Invalid Lambda input");
+//                         }
+//                     }
+//                 }
+//                 case E_LET:{
+//                     if(stxs.size()!=3){
+//                         throw RuntimeError("Wrong number of arguments let");
+//                     }
+//                     else{
+//                         std::vector<std::pair<std::string,Expr>>bind;
+//                         Assoc newe = env;
+//                         if(auto var_init = dynamic_cast<List*>(stxs[1].get())){
+//                             for(int i=0;i<var_init->stxs.size();i++){
+//                                 if(auto bind_em=dynamic_cast<List*>(var_init->stxs[i].get())){
+//                                     if(bind_em->stxs.size()==2){
+//                                         if(auto iden = dynamic_cast<Identifier*>(bind_em->stxs[0].get())){
+//                                             std::string id = iden->s;
+//                                             Expr exp = bind_em->stxs[1].get()->parse(env);
+//                                             bind.push_back(mp(id,exp));
+//                                             newe = extend(id, NullV(), newe);
+                                            
+//                                         }
+//                                         else{
+//                                             throw RuntimeError("Invalid id");
+//                                         }
+                                        
+//                                     }
+//                                     else{
+//                                         throw RuntimeError("Invalid let binding");
+//                                     }
+//                                 }
+//                                 else{
+//                                     throw RuntimeError("Invalid let binding");
+//                                 }
+//                             }
+//                         }
+//                         else{
+//                             throw RuntimeError("Invalid let input");
+//                         }
+//                         return Expr(new Let(bind, stxs[2]->parse(newe)));
+//                         break;
+//                     }
+//                 }
+//                 case E_LETREC:{
+//                     if(stxs.size()!=3){
+//                         throw RuntimeError("Wrong number of arguments let");
+//                     }
+//                     else{
+//                         std::vector<std::pair<std::string,Expr>>bind;
+//                         Assoc newe = env;
+//                         if(auto var_init = dynamic_cast<List*>(stxs[1].get())){
+//                             for(int i=0;i< var_init->stxs.size();i++){
+//                                 if(auto bind_em=dynamic_cast<List*>(var_init->stxs[i].get())){
+//                                     if(bind_em->stxs.size()==2){
+//                                         if(auto iden = dynamic_cast<Identifier*>(bind_em->stxs[0].get())){
+//                                             std::string id = iden->s;
+//                                             newe = extend(id, NullV(), newe);
+                                            
+//                                         }
+//                                         else{
+//                                             throw RuntimeError("Invalid id");
+//                                         }
+                                        
+//                                     }
+//                                     else{
+//                                         throw RuntimeError("Invalid let binding");
+//                                     }
+//                                 }
+//                                 else{
+//                                     throw RuntimeError("Invalid let binding");
+//                                 }
+//                             }
+//                             for(auto j:var_init->stxs){
+//                                 if(auto bind_tm=dynamic_cast<List*>(j.get())){
+            
+//                                     if(auto iden = dynamic_cast<Identifier*>(bind_tm->stxs[0].get())){
+//                                         Expr exprec = bind_tm->stxs[1].get()->parse(newe);
+//                                         bind.push_back(mp(iden->s,exprec));
+//                                     }
+//                                     else{
+//                                         throw RuntimeError("Invalid id");
+//                                     }
+                                    
+//                                 }
+//                                 else{
+//                                     throw RuntimeError("Invalid let binding");
+//                                 }
+                               
+//                             }
+//                         }
+//                         else{
+//                             throw RuntimeError("Invalid let input");
+//                         }
+//                         return Expr(new Letrec(bind, stxs[2]->parse(newe)));
+//                         break;
+//                     }
+
+//                 }
+
+//             }
+
+//         }
+//         std::vector<Expr>exprs;
+//         for(int i = 1;i<stxs.size();i++){
+//             exprs.push_back(stxs[i]->parse(env));
+//         }
+//         return Expr(new Apply(first->parse(env),exprs));
+
+//     }
+//     else if (auto lst = dynamic_cast<List*>(first)){
+//         std::vector<Expr>exprs;
+//         for(int i = 1;i<stxs.size();i++){
+//             exprs.push_back(stxs[i]->parse(env));
+//         }
+//         return Expr(new Apply(first->parse(env),exprs));
+//     }
+//     std::vector<Expr>exprs;
+//     for(int i = 1;i<stxs.size();i++){
+//         exprs.push_back(stxs[i]->parse(env));
+//     }
+//     return Expr(new Apply(first->parse(env),exprs));
+// }
+
+// #endif
