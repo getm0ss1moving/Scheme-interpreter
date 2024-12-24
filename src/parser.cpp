@@ -27,13 +27,13 @@ bool check (Assoc &e,Identifier *id){
     return true;
 }
 
-Expr globalcheck(Assoc &e,vector<Syntax>stxs){
-    Expr lamb = stxs[0]->parse(e);
-    vector<Expr>args;
-    for(int i = 1 ; i<stxs.size() ; i++){
-        args.push_back(stxs[i]->parse(e));
-    }
-    return Expr (new Apply(lamb,args));
+Expr globalcheck(Assoc &e,vector<Syntax>stxs,Identifier *id){
+        Expr lamb = stxs[0]->parse(e);
+        vector<Expr>args;
+        for(int i = 1 ; i<stxs.size() ; i++){
+            args.push_back(stxs[i]->parse(e));
+        }
+        return Expr (new Apply(lamb,args));
 }
 Expr Syntax :: parse(Assoc &env) {
     if(dynamic_cast<Number*>(ptr.get())){
@@ -66,7 +66,7 @@ Expr Number :: parse(Assoc &env) {
 }
 
 Expr Identifier :: parse(Assoc &env) {
-    return Expr(new Var(s));
+        return Expr(new Var(s));
 }
 
 Expr TrueSyntax :: parse(Assoc &env) {
@@ -78,10 +78,8 @@ Expr FalseSyntax :: parse(Assoc &env) {
 }
 
 Expr List :: parse(Assoc &env) {
-    if(stxs.size() == 0){
-        throw RuntimeError("Empty list");
-    }
     if(dynamic_cast<Identifier*>(stxs[0].get())==nullptr) {
+       
         Expr func = stxs[0]->parse(env);
         std::vector<Expr> argu;
         for(int i =1 ; i < stxs.size();i++){
@@ -89,11 +87,12 @@ Expr List :: parse(Assoc &env) {
         }
         return Expr(new Apply(func,argu));
     }
+        
     if(dynamic_cast<Identifier*>(stxs[0].get())){
         Expr init = stxs[0].get()->parse(env);
         Identifier *id = dynamic_cast<Identifier*>(stxs[0].get());
         if(check(env,id)){
-            return globalcheck(env,stxs);
+            return globalcheck(env,stxs,id);
         }
         else if(primitives.count(id->s)!=0){  //the function belongs to "primitiveS"
              switch(primitives[id->s]){
@@ -116,7 +115,7 @@ Expr List :: parse(Assoc &env) {
                     else{
                         throw RuntimeError("Wrong number of arguments3");
                         //error
-                    } 
+                    }
                     break;
                 }
                 case E_CDR:{
@@ -316,6 +315,7 @@ Expr List :: parse(Assoc &env) {
                         throw RuntimeError("Wrong number of arguments24");
                     }
                     break;
+
                 }
                 case E_BEGIN: {
                     std::vector<Expr>es;
@@ -337,8 +337,8 @@ Expr List :: parse(Assoc &env) {
                                     List* lst=dynamic_cast<List*>(i.get());
                                     if(lst->stxs.size()==2){
                                         Identifier* id_ = dynamic_cast<Identifier*>(lst->stxs[0].get());
-                                        
-                                        newe = extend(id_->s,NullV(),newe);
+                                        std::string id = id_->s;
+                                        newe = extend(id,NullV(),newe);
                                     } else{
                                         throw RuntimeError("Wrong number of arguments letrec2");
                                     }
@@ -371,10 +371,10 @@ Expr List :: parse(Assoc &env) {
                                     List* lst=dynamic_cast<List*>(i.get());
                                     if(lst->stxs.size()==2){
                                         Identifier* id_ = dynamic_cast<Identifier*>(lst->stxs[0].get());
-                                       
+                                        std::string id = id_->s;
                                         Expr temp = (lst->stxs[1].get())->parse(env);
-                                        newe = extend(id_->s,NullV(),newe);
-                                        bind_.push_back(std::mp(id_->s,temp));
+                                        newe = extend(id,NullV(),newe);
+                                        bind_.push_back(std::mp(id,temp));
                                     } else{
                                         throw RuntimeError("Wrong number of arguments let3");
                                     }
@@ -397,11 +397,11 @@ Expr List :: parse(Assoc &env) {
                             List *lst = dynamic_cast<List*>(stxs[1].get());
                             for(auto &i: lst->stxs)
                             {
-                                Expr var_ = i.get()->parse(env);
-                                if(dynamic_cast<Var*>(var_.get())){
-                                    auto id_ = dynamic_cast<Var*>(var_.get());
-                                    vars.push_back(id_->x);
-                                    newe = extend(id_->x,NullV(),newe);
+                                Expr exp = (i.get())->parse(env);
+                                if(dynamic_cast<Var*>(exp.get())){
+                                    auto var = dynamic_cast<Var*>(exp.get());
+                                    vars.push_back(var->x);
+                                    newe = extend(var->x,NullV(),newe);
                                 } else{
                                     throw RuntimeError("Wrong number of arguments34");;
                                 }
@@ -422,9 +422,6 @@ Expr List :: parse(Assoc &env) {
     
     
         }
-    }
-    else{
-        return globalcheck(env,stxs);
     }
     
 }
