@@ -9,20 +9,6 @@
 using std::vector;
 extern std :: map<std :: string, ExprType> primitives;
 extern std :: map<std :: string, ExprType> reserved_words;
-void checkVar(std::string x){
-    if(x.empty()) {throw RuntimeError("invalid var");}
-    char a = x[0];
-    if(a=='.'||a=='@'||std::isdigit(a)){
-        throw RuntimeError("invalid var");
-    }else{
-        for(int i = 0;i<x.size();i++){
-            if(x[i]=='#'){
-                throw RuntimeError("invalid var");
-            }
-        }
-    }
-    return;
-}
 Value Let::eval(Assoc &env) {
     Assoc cur = env;
     vector<std::pair<std::string,Value>>bind_v;
@@ -32,7 +18,7 @@ Value Let::eval(Assoc &env) {
     for(auto j:bind_v){
         cur=extend(j.first,j.second,cur);
     }
-    return body->eval(cur);
+    return body.get()->eval(cur);
 } // let expression
 
 Value Lambda::eval(Assoc &env) {
@@ -41,7 +27,7 @@ Value Lambda::eval(Assoc &env) {
 
 Value Apply::eval(Assoc &e) {
     Value func = rator.get()->eval(e);
-    if(func->v_type!=V_PROC){
+    if(dynamic_cast<Closure*>(func.get())){
         throw RuntimeError("Apply to non-function");
     }
     Closure* func_ = dynamic_cast<Closure*>(func.get());
@@ -54,7 +40,7 @@ Value Apply::eval(Assoc &e) {
         for(auto j:bind_v){
             cur=extend(j.first,j.second,cur);
         }
-        return func_->e->eval(cur);
+        return (func_->e)->eval(cur);
     }else{
         throw RuntimeError("Invalid number of arguments38");
     }
@@ -71,10 +57,11 @@ Value Letrec::eval(Assoc &env) {
     for(auto j:bind){
         bind_.push_back(j.second->eval(cur));
     }
+    Assoc cur_ = cur;
     for(int k = 0; k < bind_.size();k++){
-        modify(bind[k].first,bind_[k],cur);
+        modify(bind[k].first,bind_[k],cur_);
     }
-    return body->eval(cur);
+    return body.get()->eval(cur_);
 } // letrec expression
 
 Value Var::eval(Assoc &e) {
@@ -235,7 +222,6 @@ Value Var::eval(Assoc &e) {
                     Expr exp = (new Exit());
                     Assoc newe = e;
                     return ClosureV(para,exp,newe);
-                    
                 }
                 default:{
                     throw RuntimeError ("Undifined primitives");
@@ -257,7 +243,7 @@ Value Fixnum::eval(Assoc &e) {
 
 Value If::eval(Assoc &e) {
     Value cond_ = cond->eval(e);
-    if(cond_->v_type==V_BOOL){
+    if(dynamic_cast<Boolean*>(cond_.get())){
         if(dynamic_cast<Boolean*>(cond_.get())->b==false){
             return alter->eval(e);
         }
@@ -325,6 +311,9 @@ Value Quote::eval(Assoc &e) {
 
         }
     }else if(dynamic_cast<Identifier*>(s.get())){
+        // if(auto var = find(it ->s,e).get()){
+        //     return var;
+        // }
         Identifier *id = dynamic_cast<Identifier*>(s.get());
         return SymbolV(id->s);
     }
@@ -352,21 +341,21 @@ Value Binary::eval(Assoc &e) {
     ||e_type == E_GT||e_type == E_GE ){
         Value rand1_ = rand1->eval(e);
         Value rand2_ = rand2->eval(e);
-        if(rand1_.get()->v_type==V_INT&&rand2_.get()->v_type==V_INT){
+        if(dynamic_cast<Integer*>(rand1_.get())&&dynamic_cast<Integer*>(rand2_.get())){
             return evalRator(rand1_,rand2_);
         }else{
             throw RuntimeError("wrong type35");
         }
     }
     if(e_type == E_CONS||e_type == E_EQQ){
-        Value rand1_ = rand1->eval(e);
-        Value rand2_ = rand2->eval(e);
+        Value rand1_ = rand1.get()->eval(e);
+        Value rand2_ = rand2.get()->eval(e);
         return evalRator(rand1_,rand2_);
     }
 } // evaluation of two-operators primitive
 
 Value Unary::eval(Assoc &e) {
-    Value rand_=rand->eval(e);
+    Value rand_=rand.get()->eval(e);
     return evalRator(rand_);
 } // evaluation of single-operator primitive
 
@@ -506,21 +495,21 @@ Value Not::evalRator(const Value &rand) {
 } // not
 
 Value Car::evalRator(const Value &rand) {
-    if(rand.get()->v_type==V_PAIR){
+    if(dynamic_cast<Pair*>(rand.get())){
         Pair* car_=dynamic_cast<Pair*>(rand.get());
         return car_->car;
     }   
     else{
-        throw RuntimeError("not a pair2");
+        throw RuntimeError("not a pair here");
     }
 } // car
 
 Value Cdr::evalRator(const Value &rand) {
-    if(rand.get()->v_type==V_PAIR){
+    if(dynamic_cast<Pair*>(rand.get())){
         Pair* cdr_=dynamic_cast<Pair*>(rand.get());
         return cdr_->cdr;
     }   
     else{
-        throw RuntimeError("not a pair1");
+        throw RuntimeError("not a pair there");
     }
 } // cdr
